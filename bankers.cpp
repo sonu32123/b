@@ -4,9 +4,8 @@
 using namespace std;
 
 // Function to check if the system is in a safe state
-bool isSafeState(vector<vector<int>>& allocation, vector<vector<int>>& max, vector<int>& available) {
+bool isSafeState(vector<vector<int>>& allocation, vector<vector<int>>& max, vector<int>& available, int resources) {
     int processes = allocation.size();
-    int resources = allocation[0].size();
 
     // Calculate the Need matrix
     vector<vector<int>> need(processes, vector<int>(resources));
@@ -21,39 +20,46 @@ bool isSafeState(vector<vector<int>>& allocation, vector<vector<int>>& max, vect
     vector<bool> finish(processes, false);
     vector<int> safeSequence;
 
-    // Find processes that can finish
-    for (int count = 0; count < processes; count++) {
+    // Keep checking until all processes are either finished or deadlocked
+    int finishedProcesses = 0;
+    while (finishedProcesses < processes) {
         bool found = false;
+
         for (int i = 0; i < processes; i++) {
             if (!finish[i]) {
-                bool canFinish = true;
+                // Check if process can execute
+                bool canExecute = true;
                 for (int j = 0; j < resources; j++) {
                     if (need[i][j] > work[j]) {
-                        canFinish = false;
+                        canExecute = false;
                         break;
                     }
                 }
-                if (canFinish) {
+
+                // If process can execute, mark it as finished and update work
+                if (canExecute) {
                     for (int j = 0; j < resources; j++) {
                         work[j] += allocation[i][j];
                     }
-                    safeSequence.push_back(i);
                     finish[i] = true;
+                    safeSequence.push_back(i);
+                    finishedProcesses++;
                     found = true;
                 }
             }
         }
+
+        // If no process can execute in this round, the system is not in a safe state
         if (!found) {
-            // If no process can finish, return false
             cout << "System is not in a safe state.\n";
             return false;
         }
     }
 
-    // If all processes can finish, print the safe sequence
+    // Print the safe sequence
     cout << "System is in a safe state.\nSafe Sequence: ";
     for (int i : safeSequence) {
-        cout << "P" << i << " ";
+        cout << "P" << i + 1 << " ";
     }
     cout << endl;
     return true;
@@ -62,38 +68,49 @@ bool isSafeState(vector<vector<int>>& allocation, vector<vector<int>>& max, vect
 int main() {
     int processes, resources;
 
-    // Input the number of processes and resources
+    // Input number of processes and resources
     cout << "Enter the number of processes: ";
     cin >> processes;
     cout << "Enter the number of resources: ";
     cin >> resources;
 
-    // Input Allocation, Maximum, and Available matrices
-    vector<vector<int>> allocation(processes, vector<int>(resources));
-    vector<vector<int>> max(processes, vector<int>(resources));
-    vector<int> available(resources);
+    // Input total available resources
+    vector<int> totalAvailable(resources);
+    cout << "Enter the total number of each type of resource: ";
+    for (int i = 0; i < resources; i++) {
+        cin >> totalAvailable[i];
+    }
 
-    cout << "Enter the Allocation matrix:\n";
+    // Input Allocation matrix
+    vector<vector<int>> allocation(processes, vector<int>(resources));
+    cout << "Enter the Allocation matrix (resources allocated to each process):\n";
     for (int i = 0; i < processes; i++) {
         for (int j = 0; j < resources; j++) {
             cin >> allocation[i][j];
         }
     }
 
-    cout << "Enter the Maximum matrix:\n";
+    // Input Maximum Need matrix
+    vector<vector<int>> max(processes, vector<int>(resources));
+    cout << "Enter the Maximum Need matrix (maximum resources each process may require):\n";
     for (int i = 0; i < processes; i++) {
         for (int j = 0; j < resources; j++) {
             cin >> max[i][j];
         }
     }
 
-    cout << "Enter the Available resources vector:\n";
+    // Calculate the Available resources vector
+    vector<int> available(resources);
     for (int i = 0; i < resources; i++) {
-        cin >> available[i];
+        int allocated = 0;
+        for (int j = 0; j < processes; j++) {
+            allocated += allocation[j][i];
+        }
+        available[i] = totalAvailable[i] - allocated;
     }
 
     // Check if the system is in a safe state
-    isSafeState(allocation, max, available);
+    isSafeState(allocation, max, available, resources);
 
     return 0;
 }
