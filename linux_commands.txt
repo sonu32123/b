@@ -1,0 +1,77 @@
+Basic Linux Commands
+1. **`pwd` (Print Working Directory)**  
+   Displays the current directory.
+   ```bash
+   $ pwd
+   /home/user/documents
+   ```
+
+2. **`ls` (List Files and Directories)**  
+   Lists files and directories in the current directory.
+   ```bash
+   $ ls
+   file1.txt  file2.txt  directory1
+   ```
+
+3. **`cd` (Change Directory)**  
+   Changes the working directory.
+   ```bash
+   $ cd /home/user/downloads
+   $ pwd
+   /home/user/downloads
+   ```
+
+4. **`mkdir` (Make Directory)**  
+   Creates a new directory.
+   ```bash
+   $ mkdir new_folder
+   $ ls
+   new_folder
+   ```
+
+5. **`rm` (Remove File)**  
+   Deletes a file.
+   ```bash
+   $ rm file1.txt
+   $ ls
+   file2.txt  directory1
+   ```
+
+---
+
+### **Advanced Linux Commands**
+1. **`find` (Search for Files and Directories)**  
+   Searches files or directories matching specific criteria.
+   ```bash
+   $ find /home/user -name "*.txt"
+   /home/user/file2.txt
+   ```
+
+2. **`grep` (Search for Patterns in Text)**  
+   Searches for a pattern in files.
+   ```bash
+   $ grep "hello" file2.txt
+   hello world
+   ```
+
+3. **`tar` (Archive Files)**  
+   Compresses files into an archive.
+   ```bash
+   $ tar -cvf archive.tar file2.txt directory1
+   $ ls
+   archive.tar
+   ```
+
+4. **`chmod` (Change File Permissions)**  
+   Modifies file permissions.
+   ```bash
+   $ chmod 755 file2.txt
+   $ ls -l
+   -rwxr-xr-x 1 user user 0 Nov 16 10:00 file2.txt
+   ```
+
+5. **`top` (Monitor System Processes)**  
+   Displays system processes and resource usage.
+   ```bash
+   $ top
+   ```
